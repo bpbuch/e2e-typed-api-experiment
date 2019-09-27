@@ -1,0 +1,27 @@
+{
+  "name": "graphql-server",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "start": "ts-node src/server.ts",
+    "dev": "nodemon"
+  },
+  "author": "Brian Buchanan",
+  "license": "ISC",
+  "dependencies": {
+    "@grpc/proto-loader": "^0.5.2",
+    "apollo-server": "^2.9.4",
+    "apollo-server-express": "^2.9.4",
+    "express": "^4.17.1",
+    "graphql": "^14.5.8",
+    "graphql-tools": "^4.0.5",
+    "grpc": "^1.24.0"
+  },
+  "devDependencies": {
+    "@types/graphql": "^14.5.0",
+    "nodemon": "^1.19.2",
+    "ts-node": "^8.4.1",
+    "tslint": "^5.20.0",
+    "typescript": "^3.6.3"
+  }
+}
