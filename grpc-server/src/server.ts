@@ -1,6 +1,13 @@
 import grpc from "grpc";
 import * as protoLoader from "@grpc/proto-loader";
 import { get } from "request-promise";
+import {
+  GetPostRequest,
+  GetCommentsRequest,
+  GetPostResponse,
+  GetPostsResponse,
+  GetCommentsResponse
+} from "../../protos";
 
 const PROTO_PATH: string = __dirname + "../../../protos/placeholder.proto";
 
@@ -21,8 +28,8 @@ const server: grpc.Server = new grpc.Server();
 
 server.addService(proto.Placeholder.service, {
   getPost: (
-    call: grpc.ServerUnaryCall<any>,
-    callback: (err: string, resp: object) => void
+    call: grpc.ServerUnaryCall<GetPostRequest>,
+    callback: grpc.sendUnaryData<GetPostResponse>,
   ) => {
     get(`https://jsonplaceholder.typicode.com/posts/${call.request.postID}`, {
       json: true,
@@ -30,7 +37,10 @@ server.addService(proto.Placeholder.service, {
       .then(post => callback(null, { post }))
       .catch(err => callback(err, null));
   },
-  getPosts: (_: void, callback: (err: string, resp: object) => void) => {
+  getPosts: (
+    _: void,
+    callback: grpc.sendUnaryData<GetPostsResponse>,
+  ) => {
     get("https://jsonplaceholder.typicode.com/posts", {
       json: true,
     })
@@ -38,8 +48,8 @@ server.addService(proto.Placeholder.service, {
       .catch(err => callback(err, null));
   },
   getComments: (
-    call: grpc.ServerUnaryCall<any>,
-    callback: (err: string, resp: object) => void
+    call: grpc.ServerUnaryCall<GetCommentsRequest>,
+    callback: grpc.sendUnaryData<GetCommentsResponse>,
   ) => {
     get(
       `https://jsonplaceholder.typicode.com/posts/${call.request.postID}/comments`, {

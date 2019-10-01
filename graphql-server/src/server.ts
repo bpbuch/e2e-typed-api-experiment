@@ -1,9 +1,14 @@
 import express from "express";
 import { ApolloServer, gql } from "apollo-server-express";
+import { DocumentNode } from "graphql";
 import { IResolvers } from "graphql-tools";
 import grpc from "grpc";
 import * as protoLoader from "@grpc/proto-loader";
-import { DocumentNode } from "graphql";
+import {
+  GetPostResponse,
+  GetPostsResponse,
+  GetCommentsResponse
+} from "../../protos";
 
 const PROTO_PATH: string = __dirname + "../../../protos/placeholder.proto";
 
@@ -41,7 +46,7 @@ const typeDefs: DocumentNode = gql`
   }
 
   type Query {
-    Post(postID: String!): Post
+    Post(id: String!): Post
     Posts: [Post]
     Comments(postID: String!): [Comment]
   }
@@ -51,7 +56,7 @@ const resolvers: IResolvers = {
   Query: {
     Post: (_: void, args: any) => {
       return new Promise((resolve, reject) => {
-        client.getPost({ postID: args.postID }, (err: string, resp: any) => {
+        client.getPost({ postID: args.id }, (err: grpc.ServiceError, resp: GetPostResponse) => {
           if (err) {
             reject(err);
             return;
@@ -63,7 +68,7 @@ const resolvers: IResolvers = {
     },
     Posts: () => {
       return new Promise((resolve, reject) => {
-        client.getPosts({}, (err: string, resp: any) => {
+        client.getPosts({}, (err: grpc.ServiceError, resp: GetPostsResponse) => {
           if (err) {
             reject(err);
             return;
@@ -77,7 +82,7 @@ const resolvers: IResolvers = {
   Post: {
     comments: (parent: any) => {
       return new Promise((resolve, reject) => {
-        client.getComments({ postID: parent.id }, (err: string, resp: any) => {
+        client.getComments({ postID: parent.id }, (err: grpc.ServiceError, resp: GetCommentsResponse) => {
           if (err) {
             reject(err);
             return;
