@@ -24,57 +24,29 @@ server.addService(proto.Placeholder.service, {
     call: grpc.ServerUnaryCall<any>,
     callback: (err: string, resp: object) => void
   ) => {
-    get(`https://jsonplaceholder.typicode.com/posts/${call.request.postID}`)
-      .then(body => {
-        try {
-          let post = JSON.parse(body);
-          callback(null, {
-            post
-          });
-        } catch (e) {
-          throw e;
-        }
-      })
-      .catch(err => {
-        callback(err, null);
-      });
+    get(`https://jsonplaceholder.typicode.com/posts/${call.request.postID}`, {
+      json: true,
+    })
+      .then(post => callback(null, { post }))
+      .catch(err => callback(err, null));
   },
   getPosts: (_: void, callback: (err: string, resp: object) => void) => {
-    get("https://jsonplaceholder.typicode.com/posts")
-      .then(body => {
-        try {
-          let posts = JSON.parse(body);
-          callback(null, {
-            posts
-          });
-        } catch (e) {
-          throw e;
-        }
-      })
-      .catch(err => {
-        callback(err, null);
-      });
+    get("https://jsonplaceholder.typicode.com/posts", {
+      json: true,
+    })
+      .then(posts => callback(null, { posts }))
+      .catch(err => callback(err, null));
   },
   getComments: (
     call: grpc.ServerUnaryCall<any>,
     callback: (err: string, resp: object) => void
   ) => {
     get(
-      `https://jsonplaceholder.typicode.com/posts/${call.request.postID}/comments`
-    )
-      .then(body => {
-        try {
-          let comments = JSON.parse(body);
-          callback(null, {
-            comments
-          });
-        } catch (e) {
-          throw e;
-        }
-      })
-      .catch(err => {
-        callback(err, null);
-      });
+      `https://jsonplaceholder.typicode.com/posts/${call.request.postID}/comments`, {
+      json: true
+    })
+      .then(comments => callback(null, { comments }))
+      .catch(err => callback(err, null));
   }
 });
 
